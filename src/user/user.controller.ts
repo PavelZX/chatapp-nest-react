@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   Param,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -39,17 +41,18 @@ export class UserController {
   }
 
   @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id') id: number) {
-    return this.userService.delete(id);
+    this.userService.delete(id);
   }
 
   @Get('/available')
   available(@Query() query) {
     if (query.username) {
-      return this.userService.usernameExists(query.username);
+      return this.userService.availableUsername(query.username);
     }
     if (query.email) {
-      return this.userService.emailExists(query.email);
+      return this.userService.availableEmail(query.email);
     }
   }
 }

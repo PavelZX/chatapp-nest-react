@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, HttpCode } from '@nestjs/common';
 
 export class EmailExistsException extends HttpException {
   constructor() {
@@ -21,5 +21,17 @@ export class UserExistsException extends HttpException {
 export class UserNotFoundException extends HttpException {
   constructor() {
     super('User not found', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class CannotCreateUserException extends HttpException {
+  constructor() {
+    super('Cannot create user', HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+export class CannotDeleteUserException extends HttpException {
+  constructor() {
+    super('Cannot delete user', HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

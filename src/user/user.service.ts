@@ -6,6 +6,7 @@ import { isEmail } from 'validator';
 import { User } from './user.entity';
 import { UserCreateDto, UserUpdateDto } from './user.dto';
 import * as UserException from './user.exception';
+import { hashPassword } from 'src/auth/auth.utils';
 
 @Injectable()
 export class UserService {
@@ -27,21 +28,28 @@ export class UserService {
 
   async create(dto: UserCreateDto) {
     const { username, email } = dto;
-    const userExists = !!(await this.userRepository.count({
+    const userExists = !!(await this.userRepository.findOne({
       where: [{ username }, { email }],
     }));
     if (userExists) {
       throw new UserException.UserExistsException();
     }
+
+    const password = await hashPassword(dto.password);
+    try {
+      await this.userRepository.save({ ...dto, password });
+    } catch (err) {
+      return new UserException.CannotCreateUserException();
+    }
   }
 
-  async usernameExists(username: string) {
-    const usernameExists = !!(await this.userRepository.count({ username }));
+  async availableUsername(username: string) {
+    const usernameExists = !!(await this.userRepository.findOne({ username }));
     if (usernameExists) throw new UserException.UsernameExistsException();
   }
 
-  async emailExists(email: string) {
-    const emailExists = !!(await this.userRepository.count({ email }));
+  async availableEmail(email: string) {
+    const emailExists = !!(await this.userRepository.findOne({ email }));
     if (emailExists) throw new UserException.EmailExistsException();
   }
 
@@ -49,7 +57,11 @@ export class UserService {
     return this.userRepository.update(id, dto);
   }
 
-  delete(id: number) {
-    return this.userRepository.delete(id);
+  async delete(id: number) {
+    try {
+      await this.userRepository.delete(id);
+    } catch (err) {
+      return err;
+    }
   }
 }

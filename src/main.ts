@@ -6,7 +6,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 import * as compression from 'compression';
 import * as morgan from 'morgan';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ParseIntPipe } from '@nestjs/common';
 
 declare const module: any;
 
@@ -24,6 +24,7 @@ async function bootstrap() {
 
   // pipes
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ParseIntPipe());
 
   // swagger api docs
   const apiDocOptions = new DocumentBuilder()
