@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
@@ -29,4 +35,23 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @ManyToMany(
+    type => User,
+    user => user.inverseFriends,
+    {
+      cascade: true,
+    },
+  )
+  @JoinTable()
+  friends: User[];
+
+  @ManyToMany(
+    type => User,
+    user => user.friends,
+    {
+      cascade: true,
+    },
+  )
+  inverseFriends: User[];
 }

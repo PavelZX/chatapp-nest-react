@@ -5,6 +5,8 @@ import { ormconfig } from './config';
 import { UserModule } from './user/user.module';
 import { Connection } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot(ormconfig),
     UserModule,
     AuthModule,
+    ChatModule,
+    RoomModule,
   ],
 })
 export class AppModule {

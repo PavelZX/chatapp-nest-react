@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(identity: string, password: string) {
     const user = await this.userService.findOne(identity);
-    // password = await hashPassword(password);
+    password = await hashPassword(password);
     if (user && user.password == password) {
       return user;
     }
